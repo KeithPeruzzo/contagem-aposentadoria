@@ -1,0 +1,76 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contagem Regressiva para Aposentadoria</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1a1a1a;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            text-align: center;
+        }
+        .container {
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 30px;
+            border-radius: 10px;
+        }
+        #countdown {
+            font-size: 2em;
+            margin-top: 20px;
+        }
+        #motivational {
+            margin-top: 20px;
+            font-size: 1.2em;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Contagem Regressiva para Aposentadoria</h1>
+        <div id="countdown"></div>
+        <div id="motivational"></div>
+    </div>
+
+    <script>
+        const targetDate = new Date("2026-06-30T00:00:00").getTime();
+
+        const motivationalPhrases = [
+            "Cada dia é um passo mais perto do seu sonho.",
+            "A liberdade está logo ali, continue firme!",
+            "Você já conquistou tanto, o melhor ainda está por vir.",
+            "Cada segundo conta nessa jornada incrível.",
+            "O futuro pertence àqueles que acreditam na beleza de seus sonhos.",
+            "Respira, foca e segue. Falta pouco!"
+        ];
+
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const distance = targetDate - now;
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            document.getElementById("countdown").innerHTML =
+                `${days} dias, ${hours}h ${minutes}m ${seconds}s`;
+
+            const phraseIndex = new Date().getDate() % motivationalPhrases.length;
+            document.getElementById("motivational").innerHTML =
+                motivationalPhrases[phraseIndex];
+        }
+
+        updateCountdown();
+        setInterval(updateCountdown, 1000);
+    </script>
+</body>
+</html>
