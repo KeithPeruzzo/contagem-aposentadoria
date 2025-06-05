@@ -1,60 +1,46 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Contagem Regressiva para Aposentadoria</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background-color: #1a1a1a;
-      color: #fff;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      margin: 0;
-      padding: 20px;
+      background-color: #111;
+      color: white;
       text-align: center;
+      padding: 20px;
     }
-
     .container {
-      background-color: rgba(0, 0, 0, 0.7);
+      background-color: #222;
       padding: 30px;
-      border-radius: 10px;
-      max-width: 900px;
-      width: 100%;
+      border-radius: 12px;
+      display: inline-block;
     }
-
-    .counter-group {
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
+    h1 {
+      margin-bottom: 20px;
     }
-
-    .counter {
-      font-size: 1.5em;
-      font-weight: bold;
+    #countdown, #countdown-uteis {
+      font-size: 1.8em;
+      margin: 10px 0;
     }
-
-    .images {
+    #motivational {
+      font-style: italic;
+      margin-top: 20px;
+      font-size: 1.2em;
+      color: #ccc;
+    }
+    .image-block {
       margin-top: 30px;
-      display: flex;
-      gap: 20px;
-      flex-wrap: wrap;
-      justify-content: center;
     }
-
-    .images img {
-      max-width: 300px;
+    .image-block img {
+      width: 300px;
       border-radius: 10px;
-      box-shadow: 0 0 15px #000;
+      box-shadow: 0 0 10px black;
     }
-
     .caption {
-      margin-top: 8px;
-      font-size: 0.95em;
+      margin-top: 10px;
       font-style: italic;
     }
   </style>
@@ -62,77 +48,82 @@
 <body>
   <div class="container">
     <h1>Contagem Regressiva para Aposentadoria</h1>
-    <div class="counter-group">
-      <div class="counter" id="corridos"></div>
-      <div class="counter" id="uteis"></div>
-    </div>
-    <div id="motivational" style="margin-top: 20px; font-style: italic;"></div>
+    <div id="countdown"></div>
+    <div id="countdown-uteis"></div>
+    <div id="motivational"></div>
 
-    <div class="images">
-      <div>
-        <img src="clinica.jpg" alt="Clínica em Portugal" />
-        <div class="caption">Clínica em Portugal</div>
-      </div>
-      <div>
-        <img src="familia.jpg" alt="Família" />
-        <div class="caption">Família que me acompanha</div>
-      </div>
+    <div class="image-block">
+      <img src="clinica.jpg" alt="Clínica em Portugal">
+      <div class="caption">Clínica em Portugal</div>
+    </div>
+    
+    <div class="image-block">
+      <img src="familia.jpg" alt="Família">
+      <div class="caption">Família</div>
     </div>
   </div>
 
   <script>
-    const dataFinal = new Date("2026-06-30");
-    const feriados = [
-      // Feriados nacionais e de Caraguatatuba em 2025
-      "2025-01-01", "2025-02-25", "2025-04-18", "2025-04-21", "2025-05-01",
-      "2025-06-19", "2025-07-09", "2025-09-07", "2025-10-12", "2025-11-02",
-      "2025-11-15", "2025-12-25"
+    const targetDate = new Date("2026-06-30T00:00:00");
+    const holidays = [
+      "2025-01-01", "2025-01-25", "2025-02-25", "2025-04-18", "2025-04-21",
+      "2025-05-01", "2025-06-20", "2025-07-09", "2025-09-07", "2025-10-12",
+      "2025-11-02", "2025-11-15", "2025-12-25"
     ];
     const feriasInicio = new Date("2025-11-15");
     const feriasFim = new Date("2025-12-15");
 
-    function contarDiasUteis(inicio, fim) {
-      let uteis = 0;
-      let dia = new Date(inicio);
+    const frases = [
+      "Cada dia é um passo mais perto do seu sonho.",
+      "A liberdade está logo ali, continue firme!",
+      "Você já conquistou tanto, o melhor ainda está por vir.",
+      "Cada segundo conta nessa jornada incrível.",
+      "O futuro pertence àqueles que acreditam na beleza de seus sonhos.",
+      "Respira, foca e segue. Falta pouco!"
+    ];
 
-      while (dia <= fim) {
-        const isWeekend = [0, 6].includes(dia.getDay());
-        const isFriday = dia.getDay() === 5;
-        const isFeriado = feriados.includes(dia.toISOString().slice(0, 10));
-        const isFerias = dia >= feriasInicio && dia <= feriasFim;
+    function isFeriado(date) {
+      const iso = date.toISOString().split("T")[0];
+      return holidays.includes(iso);
+    }
 
-        if (!isWeekend && !isFeriado && !isFerias && dia.getDay() <= 4) {
-          uteis++;
-        }
+    function isFerias(date) {
+      return date >= feriasInicio && date <= feriasFim;
+    }
 
-        dia.setDate(dia.getDate() + 1);
+    function contarDiasUteis(start, end) {
+      let count = 0;
+      let current = new Date(start);
+      while (current <= end) {
+        const dia = current.getDay();
+        const isUtil = (dia >= 1 && dia <= 4) && !isFeriado(current) && !isFerias(current);
+        if (isUtil) count++;
+        current.setDate(current.getDate() + 1);
       }
-
-      return uteis;
+      return count;
     }
 
-    function atualizarContadores() {
-      const hoje = new Date();
-      const totalCorridos = Math.floor((dataFinal - hoje) / (1000 * 60 * 60 * 24));
-      const totalUteis = contarDiasUteis(hoje, dataFinal);
+    function atualizar() {
+      const agora = new Date();
+      const diff = targetDate - agora;
+      const dias = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const horas = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutos = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      const segundos = Math.floor((diff % (1000 * 60)) / 1000);
 
-      document.getElementById("corridos").textContent = Dias corridos restantes: ${totalCorridos};
-      document.getElementById("uteis").textContent = Dias úteis restantes: ${totalUteis};
+      document.getElementById("countdown").textContent =
+        Dias totais restantes: ${dias} (${horas}h ${minutos}m ${segundos}s);
 
-      const frases = [
-        "Cada dia é um passo mais perto do seu sonho.",
-        "A liberdade está logo ali, continue firme!",
-        "Você já conquistou tanto, o melhor ainda está por vir.",
-        "Cada segundo conta nessa jornada incrível.",
-        "O futuro pertence àqueles que acreditam na beleza de seus sonhos.",
-        "Respira, foca e segue. Falta pouco!"
-      ];
-      const indice = hoje.getDate() % frases.length;
-      document.getElementById("motivational").textContent = frases[indice];
+      const uteis = contarDiasUteis(agora, targetDate);
+      document.getElementById("countdown-uteis").textContent =
+        Dias úteis restantes: ${uteis};
+
+      const fraseDoDia = frases[new Date().getDate() % frases.length];
+      document.getElementById("motivational").textContent = fraseDoDia;
     }
 
-    atualizarContadores();
-    setInterval(atualizarContadores, 1000 * 60 * 60); // Atualiza a cada hora
+    atualizar();
+    setInterval(atualizar, 1000);
   </script>
 </body>
 </html>
