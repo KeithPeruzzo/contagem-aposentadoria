@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -11,29 +9,37 @@
             font-family: Arial, sans-serif;
             background-color: #1a1a1a;
             color: #fff;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
             margin: 0;
+            padding: 20px;
             text-align: center;
         }
-
         .container {
             background-color: rgba(0, 0, 0, 0.7);
             padding: 30px;
             border-radius: 10px;
+            max-width: 800px;
+            margin: auto;
         }
-
-        #countdown {
+        #countdown, #workdays {
             font-size: 2em;
-            margin-top: 20px;
+            margin: 10px 0;
         }
-
         #motivational {
             margin-top: 20px;
             font-size: 1.2em;
             font-style: italic;
+        }
+        .images {
+            margin-top: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .images img {
+            width: 100%;
+            max-width: 350px;
+            border-radius: 10px;
+            margin: auto;
         }
     </style>
 </head>
@@ -41,16 +47,20 @@
     <div class="container">
         <h1>Contagem Regressiva para Aposentadoria</h1>
         <div id="countdown"></div>
+        <div id="workdays">Dias úteis restantes: <strong>198</strong></div>
         <div id="motivational"></div>
+        <div class="images">
+            <img src="clinica.jpg" alt="Clínica em Portugal">
+            <img src="familia.jpg" alt="Família">
+        </div>
     </div>
 
     <script>
         const targetDate = new Date("2026-06-30T00:00:00").getTime();
-
         const motivationalPhrases = [
             "Cada dia é um passo mais perto do seu sonho.",
-            "A liberdade está logo ali. Continue firme!",
-            "Você já conquistou tanto. O melhor ainda está por vir.",
+            "A liberdade está logo ali, continue firme!",
+            "Você já conquistou tanto, o melhor ainda está por vir.",
             "Cada segundo conta nessa jornada incrível.",
             "O futuro pertence àqueles que acreditam na beleza de seus sonhos.",
             "Respira, foca e segue. Falta pouco!"
@@ -66,7 +76,7 @@
             const seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
             document.getElementById("countdown").innerHTML =
-                `${days} dias, ${hours}h ${minutes}m ${seconds}s`;
+                ${days} dias, ${hours}h ${minutes}m ${seconds}s;
 
             const phraseIndex = new Date().getDate() % motivationalPhrases.length;
             document.getElementById("motivational").innerHTML =
@@ -78,4 +88,3 @@
     </script>
 </body>
 </html>
-        
