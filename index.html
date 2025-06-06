@@ -15,79 +15,64 @@
       justify-content: flex-start;
       min-height: 100vh;
       margin: 0;
-      padding: 30px 10px;
-      text-align: center;
+      padding: 20px;
     }
     .container {
       background-color: rgba(0, 0, 0, 0.7);
       padding: 30px;
       border-radius: 10px;
-      max-width: 600px;
+      text-align: center;
+      max-width: 800px;
+    }
+    img {
       width: 100%;
+      max-width: 400px;
+      border-radius: 10px;
+      margin: 20px 0 10px;
+    }
+    .caption {
+      font-style: italic;
+      margin-bottom: 20px;
     }
     #countdown {
       font-size: 2em;
       margin-top: 20px;
     }
     #motivational {
-      margin-top: 20px;
+      margin-top: 10px;
       font-size: 1.2em;
       font-style: italic;
-    }
-    .image-section {
-      margin-top: 30px;
-    }
-    .image-section img {
-      width: 100%;
-      max-width: 500px;
-      border-radius: 10px;
-    }
-    .caption {
-      font-style: italic;
-      margin-top: 10px;
-      margin-bottom: 30px;
     }
   </style>
 </head>
 <body>
   <div class="container">
     <h1>Contagem Regressiva para Aposentadoria</h1>
-    <div id="countdown">Carregando dias úteis...</div>
-    <div id="motivational">Carregando frase motivacional...</div>
+    <div id="countdown">Carregando...</div>
+    <div id="motivational">Frase motivacional será exibida aqui.</div>
 
-    <div class="image-section">
-      <img src="clinica.jpg" alt="Clínica em Portugal">
-      <div class="caption">Clínica em Portugal</div>
+    <img src="clinica.jpg" alt="Clínica em Portugal">
+    <div class="caption">Clínica em Portugal</div>
 
-      <img src="familia.jpg" alt="Família">
-      <div class="caption">Família</div>
-    </div>
+    <img src="familia.jpg" alt="Família">
+    <div class="caption">Família</div>
   </div>
 
   <script>
     const feriados = [
-      "2025-01-01", "2025-01-25", "2025-02-28", "2025-03-04", "2025-03-30",
-      "2025-04-18", "2025-04-21", "2025-05-01", "2025-06-20", "2025-07-09",
-      "2025-09-07", "2025-10-12", "2025-11-02", "2025-11-15", "2025-11-20",
-      "2025-12-25", "2026-01-01", "2026-01-25", "2026-03-03", "2026-04-03",
-      "2026-04-21", "2026-05-01", "2026-05-31", "2026-06-11"
+      "2025-01-01", "2025-02-25", "2025-04-18", "2025-04-21",
+      "2025-05-01", "2025-06-19", "2025-07-09", "2025-09-07",
+      "2025-10-12", "2025-11-02", "2025-11-15", "2025-12-25",
+      "2025-03-19", "2025-06-13", "2025-11-20" // municipais Caraguatatuba
     ];
 
-    const startDate = new Date();
-    const endDate = new Date("2026-06-30");
-    const feriasInicio = new Date("2025-11-15");
-    const feriasFim = new Date("2025-12-15");
-
-    function isBusinessDay(date) {
+    const isBusinessDay = (date) => {
       const day = date.getDay();
-      const isWeekend = day === 0 || day === 6;
-      const isHoliday = feriados.includes(date.toISOString().split("T")[0]);
-      const isFerias = date >= feriasInicio && date <= feriasFim;
-      const isFriday = day === 5; // sexta-feira
-      return !(isWeekend || isHoliday || isFerias || isFriday);
-    }
+      const iso = date.toISOString().split('T')[0];
+      return day !== 0 && day !== 6 && !feriados.includes(iso);
+    };
 
-    function countBusinessDays(start, end) {
+    const countBusinessDays = (start, end) => {
       let count = 0;
       const cur = new Date(start);
       while (cur <= end) {
@@ -95,10 +80,14 @@
         cur.setDate(cur.getDate() + 1);
       }
       return count;
-    }
+    };
 
-    const businessDaysRemaining = countBusinessDays(startDate, endDate);
-    document.getElementById("countdown").innerText = Dias úteis restantes: ${businessDaysRemaining};
+    const startDate = new Date();
+    const endDate = new Date("2026-06-30");
+    // desconta 30 dias de férias
+    let businessDays = countBusinessDays(startDate, endDate) - 30;
+
+    document.getElementById("countdown").innerText = Dias úteis restantes: ${businessDays};
 
     const phrases = [
       "Cada dia é um passo mais perto do seu sonho.",
@@ -109,8 +98,8 @@
       "Respira, foca e segue. Falta pouco!"
     ];
 
-    const phraseIndex = new Date().getDate() % phrases.length;
-    document.getElementById("motivational").innerText = phrases[phraseIndex];
+    const index = new Date().getDate() % phrases.length;
+    document.getElementById("motivational").innerText = phrases[index];
   </script>
 </body>
 </html>
