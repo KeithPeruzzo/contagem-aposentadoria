@@ -52,8 +52,8 @@
 <body>
   <div class="container">
     <h1>Contagem Regressiva para Aposentadoria</h1>
-    <div id="countdown"></div>
-    <div id="motivational"></div>
+    <div id="countdown">Carregando dias úteis...</div>
+    <div id="motivational">Carregando frase motivacional...</div>
 
     <div class="image-section">
       <img src="clinica.jpg" alt="Clínica em Portugal">
@@ -81,10 +81,10 @@
     function isBusinessDay(date) {
       const day = date.getDay();
       const isWeekend = day === 0 || day === 6;
-      const isFridayOff = day === 5;
       const isHoliday = feriados.includes(date.toISOString().split("T")[0]);
       const isFerias = date >= feriasInicio && date <= feriasFim;
-      return !isWeekend && !isHoliday && !isFerias && !isFridayOff;
+      const isFriday = day === 5; // sexta-feira
+      return !(isWeekend || isHoliday || isFerias || isFriday);
     }
 
     function countBusinessDays(start, end) {
@@ -97,10 +97,10 @@
       return count;
     }
 
-    const daysRemaining = countBusinessDays(startDate, endDate);
-    document.getElementById("countdown").innerHTML = Dias úteis restantes: ${daysRemaining};
+    const businessDaysRemaining = countBusinessDays(startDate, endDate);
+    document.getElementById("countdown").innerText = Dias úteis restantes: ${businessDaysRemaining};
 
-    const motivationalPhrases = [
+    const phrases = [
       "Cada dia é um passo mais perto do seu sonho.",
       "A liberdade está logo ali, continue firme!",
       "Você já conquistou tanto, o melhor ainda está por vir.",
@@ -109,9 +109,8 @@
       "Respira, foca e segue. Falta pouco!"
     ];
 
-    const today = new Date();
-    const phraseIndex = today.getDate() % motivationalPhrases.length;
-    document.getElementById("motivational").innerHTML = motivationalPhrases[phraseIndex];
+    const phraseIndex = new Date().getDate() % phrases.length;
+    document.getElementById("motivational").innerText = phrases[phraseIndex];
   </script>
 </body>
 </html>
