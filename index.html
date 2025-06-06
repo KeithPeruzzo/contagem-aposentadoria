@@ -7,41 +7,44 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      background-color: #111;
-      color: white;
+      background-color: #1a1a1a;
+      color: #fff;
       text-align: center;
       padding: 20px;
     }
     .container {
-      background-color: #222;
+      max-width: 800px;
+      margin: auto;
+      background-color: #2c2c2c;
       padding: 30px;
       border-radius: 12px;
-      display: inline-block;
     }
-    h1 {
-      margin-bottom: 20px;
-    }
-    #countdown, #countdown-uteis {
-      font-size: 1.8em;
-      margin: 10px 0;
+    #countdown {
+      font-size: 2em;
+      margin: 20px 0;
     }
     #motivational {
       font-style: italic;
-      margin-top: 20px;
-      font-size: 1.2em;
+      margin-top: 15px;
       color: #ccc;
     }
-    .image-block {
+    .photos {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
       margin-top: 30px;
+      gap: 20px;
     }
-    .image-block img {
-      width: 300px;
+    .photos img {
+      max-width: 300px;
       border-radius: 10px;
-      box-shadow: 0 0 10px black;
+      box-shadow: 0 0 10px #000;
     }
     .caption {
-      margin-top: 10px;
       font-style: italic;
+      margin-top: 8px;
+      font-size: 0.95em;
+      color: #ccc;
     }
   </style>
 </head>
@@ -49,81 +52,72 @@
   <div class="container">
     <h1>Contagem Regressiva para Aposentadoria</h1>
     <div id="countdown"></div>
-    <div id="countdown-uteis"></div>
     <div id="motivational"></div>
-
-    <div class="image-block">
-      <img src="clinica.jpg" alt="Clínica em Portugal">
-      <div class="caption">Clínica em Portugal</div>
-    </div>
-    
-    <div class="image-block">
-      <img src="familia.jpg" alt="Família">
-      <div class="caption">Família</div>
+    <div class="photos">
+      <div>
+        <img src="clinica.jpg" alt="Clínica em Portugal">
+        <div class="caption">Clínica em Portugal</div>
+      </div>
+      <div>
+        <img src="familia.jpg" alt="Família">
+        <div class="caption">Família</div>
+      </div>
     </div>
   </div>
 
   <script>
-    const targetDate = new Date("2026-06-30T00:00:00");
-    const holidays = [
-      "2025-01-01", "2025-01-25", "2025-02-25", "2025-04-18", "2025-04-21",
-      "2025-05-01", "2025-06-20", "2025-07-09", "2025-09-07", "2025-10-12",
-      "2025-11-02", "2025-11-15", "2025-12-25"
+    const targetDate = new Date("2026-06-30");
+    const feriados = [
+      "2025-01-01", "2025-02-25", "2025-03-28", "2025-04-21", "2025-05-01",
+      "2025-07-09", "2025-09-07", "2025-10-12", "2025-11-02", "2025-11-15",
+      "2025-12-25"
     ];
     const feriasInicio = new Date("2025-11-15");
     const feriasFim = new Date("2025-12-15");
-
-    const frases = [
+    const motivationalPhrases = [
       "Cada dia é um passo mais perto do seu sonho.",
       "A liberdade está logo ali, continue firme!",
       "Você já conquistou tanto, o melhor ainda está por vir.",
       "Cada segundo conta nessa jornada incrível.",
-      "O futuro pertence àqueles que acreditam na beleza de seus sonhos.",
+      "O futuro pertence a quem acredita nos seus sonhos.",
       "Respira, foca e segue. Falta pouco!"
     ];
 
     function isFeriado(date) {
-      const iso = date.toISOString().split("T")[0];
-      return holidays.includes(iso);
+      const iso = date.toISOString().split('T')[0];
+      return feriados.includes(iso);
     }
 
     function isFerias(date) {
       return date >= feriasInicio && date <= feriasFim;
     }
 
-    function contarDiasUteis(start, end) {
+    function isDiaUtil(date) {
+      const day = date.getDay();
+      return day !== 0 && day !== 6 && day !== 2; // trabalha 4 dias úteis: seg, qua, qui, sex
+    }
+
+    function calcularDiasUteis() {
       let count = 0;
-      let current = new Date(start);
-      while (current <= end) {
-        const dia = current.getDay();
-        const isUtil = (dia >= 1 && dia <= 4) && !isFeriado(current) && !isFerias(current);
-        if (isUtil) count++;
-        current.setDate(current.getDate() + 1);
+      let atual = new Date();
+      while (atual <= targetDate) {
+        if (isDiaUtil(atual) && !isFeriado(atual) && !isFerias(atual)) {
+          count++;
+        }
+        atual.setDate(atual.getDate() + 1);
       }
       return count;
     }
 
-    function atualizar() {
-      const agora = new Date();
-      const diff = targetDate - agora;
-      const dias = Math.floor(diff / (1000 * 60 * 60 * 24));
-      const horas = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const minutos = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-      const segundos = Math.floor((diff % (1000 * 60)) / 1000);
-
-      document.getElementById("countdown").textContent =
-        Dias totais restantes: ${dias} (${horas}h ${minutos}m ${segundos}s);
-
-      const uteis = contarDiasUteis(agora, targetDate);
-      document.getElementById("countdown-uteis").textContent =
-        Dias úteis restantes: ${uteis};
-
-      const fraseDoDia = frases[new Date().getDate() % frases.length];
-      document.getElementById("motivational").textContent = fraseDoDia;
+    function mostrarContagem() {
+      const diasUteis = calcularDiasUteis();
+      document.getElementById("countdown").innerHTML = Dias úteis restantes: ${diasUteis};
+      const frase = motivationalPhrases[new Date().getDate() % motivationalPhrases.length];
+      document.getElementById("motivational").innerHTML = frase;
     }
 
-    atualizar();
-    setInterval(atualizar, 1000);
+    mostrarContagem();
+    setInterval(mostrarContagem, 1000 * 60 * 60); // atualiza a cada hora
   </script>
 </body>
 </html>
